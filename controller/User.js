@@ -1012,7 +1012,7 @@ router.post('/meditation', async (req, res) => {
 router.post('/messages', async (req, res) => {
   try {
       const { UId } = req.session;
-      const { message, messageTime } = req.body;
+      const { message, messageTime , message_priority} = req.body;
 
       // Check if the user exists
       const existingUser = await Users.findOne({ where: { UId } });
@@ -1024,7 +1024,8 @@ router.post('/messages', async (req, res) => {
       const newMessage = await Messages.create({
           UId,
           message,
-          messageTime
+          messageTime,
+          message_priority
       });
 
       // Save the new message record
@@ -1053,7 +1054,9 @@ router.post('/messages', async (req, res) => {
  *                message:
  *                  type: text
  *                messageTime:
- *                  type: string        
+ *                  type: string  
+ *                message_priority:
+ *                  type: string      
  *     responses:
  *       200:
  *         description: Message created successfully

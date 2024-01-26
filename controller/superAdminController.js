@@ -4,7 +4,7 @@ const router = express.Router();
 const {Users} = require('../model/validUsers');
 const { Op } = require("sequelize");
 const Distribution = require('../model/distribution');
-const financialconfig = require('../model/financialConfiq');
+const financialconfig = require('../model/financialConfig');
 
 
 

@@ -7,7 +7,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 
 });
 const applicationconfig = sequelize.define('applicationconfig',{
-reg_page_prompt:{type:DataTypes.string},
+reg_page_prompt:{type:DataTypes.STRING},
 reg_page_Reff:{type:DataTypes.STRING},
 reg_footer_text:{type:DataTypes.STRING},
 reg_successcard:{type:DataTypes.STRING},
