@@ -8,4 +8,6 @@ app.use(cors())
 app.use('/admin',require('../controller/AdminController'));
 app.use('/superadmin',require('../controller/superAdminController'));
 app.use('/User',require('../controller/User'));
+app.use('/config',require('../controller/configaration'));
+app.use('/support',require('../controller/supportcontact'));
 module.exports = app;

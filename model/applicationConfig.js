@@ -17,5 +17,15 @@ reg_success_pageText:{type:DataTypes.STRING},
 reg_success_SMS:{type:DataTypes.TEXT},
 reg_email_prompt:{type:DataTypes.STRING},
 
-
+},
+{
+    timestamps: false, 
 });
+sequelize.sync({alter:true})
+    .then((data) => {
+        console.log('Applicationconfig table created');
+    })
+    .catch((err) =>{
+        console.log(err);
+    });
+    module.exports =applicationconfig

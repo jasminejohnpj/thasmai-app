@@ -2,7 +2,7 @@ const express = require('express');
 const {reg} = require('../model/registration');
 const BankDetails =require('../model/bankdetails');
 const router = express.Router();
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const axios = require('axios');
 const Country =require('../model/country');
 const session = require('express-session');
@@ -1052,7 +1052,7 @@ router.post('/messages', async (req, res) => {
  *              type: object
  *              properties:
  *                message:
- *                  type: text
+ *                  type: string
  *                messageTime:
  *                  type: string  
  *                message_priority:
@@ -1691,7 +1691,7 @@ router.get('/meditation-date', async (req, res) => {
  * @swagger
  * /User/meditation-date:
  *   get:
- *     summary: Show the meditated details of current user
+ *     summary: Show the meditated details of current  user
  *     description: Show the meditated details of current user
  *     responses:
  *       200:
@@ -1778,5 +1778,43 @@ router.get('/getBankDetails/:UId', async (req, res) => {
  *               error: Internal Server Error
  */
 
+  router.get('/list-appointment', async(req,res) =>{
+    try{
+      const { UId } = req.session;
 
+      if(!UId) {
+         
+        return res.status(401).json({error:'User not authenticated'});
+      }
+      //console.log('get appointment list');
+      // find the appointment
+      const list = await appointment.findAll({where:{UId:UId},});
+      res.status(200).json({message:'Fetching appointments',list });
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({message:'internal server error'});
+    }
+  });
+
+  router.delete('/appointment/:id', async(req,res) =>{
+    const { UId} = req.session;
+    const id = req.params.id;
+    try{
+
+      //console.log('delete appointment');
+     // find the appointment
+      const data = await appointment.findOne({ where:{id}});
+
+      if(!UId) {
+        return res.status(404).json({error:'User not authenticated'});
+      }
+      // delete appointment
+      await data.destroy();
+      return res.status(200).json('delete appointment');
+
+    } catch(error){
+      return res.status(500).json({message:'internal server error'});
+    }
+  });
+  
 module.exports = router;
