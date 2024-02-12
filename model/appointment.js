@@ -9,6 +9,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 });
 const appointment = sequelize.define('appointment',{
     UId :{type:DataTypes.INTEGER},
+    phone:{type:DataTypes.STRING},
    appointmentDate : { type: DataTypes.STRING },
    num_of_people : { type: DataTypes.INTEGER},
    pickup : { type: DataTypes.BOOLEAN},
@@ -17,6 +18,13 @@ const appointment = sequelize.define('appointment',{
    emergencyNumber : { type: DataTypes.STRING},
    appointment_time: { type: DataTypes.STRING},
    appointment_reason: { type: DataTypes.TEXT},
+   user_name:{ type:DataTypes.STRING},
+   register_date:{ type:DataTypes.STRING},
+   appointment_status:{ type:DataTypes.STRING},
+   payment:{ type:DataTypes.STRING},
+   payment_method:{type : DataTypes.STRING},
+   discount:{ type:DataTypes.STRING},
+   check_out:{ type: DataTypes.STRING}
 },
 {timestamps: false});
 sequelize.sync({alter:true})

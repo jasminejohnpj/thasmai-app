@@ -1066,16 +1066,17 @@ router.post('/messages', async (req, res) => {
 
 router.post("/appointment", async (req, res) => {
   try {
-      const { UId } = req.session;
-      const { appointmentDate, num_of_people, pickup, room, from, emergencyNumber, appointment_time, appointment_reason } = req.body;
+      
+      const {phone, appointmentDate, num_of_people, pickup, room, from, emergencyNumber, appointment_time, appointment_reason , register_date } = req.body;
 
-      const existingUser = await Users.findOne({ where: { UId } });
+      const existingUser = await reg.findOne({ where: { phone } });
       if (!existingUser) {
           return res.status(404).json({ error: 'User not found' });
       }
 
       const newappointment = await appointment.create({
-          UId,
+          UId : existingUser.UId,
+          phone,
           appointmentDate,
           num_of_people,
           pickup,
@@ -1083,7 +1084,11 @@ router.post("/appointment", async (req, res) => {
           from,
           emergencyNumber,
           appointment_time,
-          appointment_reason
+          appointment_reason,
+          register_date,
+          user_name : existingUser.first_name +" "+ existingUser.last_name,
+          appointment_status:"check_in"
+
       });
 
       await newappointment.save();
@@ -1780,24 +1785,59 @@ router.get('/getBankDetails/:UId', async (req, res) => {
 
   router.get('/list-appointment', async(req,res) =>{
     try{
-      const { UId } = req.session;
+      const { phone } = req.body
 
-      if(!UId) {
+      if(!phone) {
          
         return res.status(401).json({error:'User not authenticated'});
       }
       //console.log('get appointment list');
       // find the appointment
-      const list = await appointment.findAll({where:{UId:UId},});
+      const list = await appointment.findAll({where:{phone},});
       res.status(200).json({message:'Fetching appointments',list });
     } catch(error) {
       console.log(error);
       res.status(500).json({message:'internal server error'});
     }
   });
-
+/**
+ * @swagger
+ * /User/list-appointment
+ *   get:
+ *     summary: To list the appointments
+ *     description:  To list the appointments
+ *     responses:
+ *       200:
+ *         description:Fetching appointments
+ *         content:
+ *           application/json:
+ *             example:
+ *               Id: 11
+ *               UId: "1"
+ *               phone: "76879890"
+ *               appointmentDate: "20-04-2023"
+ *               num_of_people: 2
+ *               pickup: "true" 
+ *               from: "airport"
+ *               room: "1"
+ *               emergencyNumber: "76879890"
+ *               appointment_time : "2:00:00"
+ *               appointment_reason : "visit"
+ *       200:
+ *         description: No records found with timeEstimate >= 90
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: No records found with timeEstimate >= 90
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ */
   router.delete('/appointment/:id', async(req,res) =>{
-    const { UId} = req.session;
+    const { phone} = req.body;
     const id = req.params.id;
     try{
 
@@ -1805,7 +1845,7 @@ router.get('/getBankDetails/:UId', async (req, res) => {
      // find the appointment
       const data = await appointment.findOne({ where:{id}});
 
-      if(!UId) {
+      if(!phone) {
         return res.status(404).json({error:'User not authenticated'});
       }
       // delete appointment
@@ -1816,5 +1856,34 @@ router.get('/getBankDetails/:UId', async (req, res) => {
       return res.status(500).json({message:'internal server error'});
     }
   });
-  
+/**
+ * @swagger
+ * /User/appointment/{id}:
+ *   delete:
+ *     summary: To delete the appointment
+ *     description: To delete the appointment
+ *     parameters:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "ID of the appointment to be deleted"
+ *         required: true
+ *         type: "string"
+ *       - name: "phone"
+ *         in: "body"
+ *         description: "User's phone number for authentication"
+ *         required: true
+ *         schema:
+ *           type: "object"
+ *           properties:
+ *             phone:
+ *               type: "string"
+ *     responses:
+ *       200:
+ *         description: "Appointment deleted successfully"
+ *       404:
+ *         description: "User not authenticated"
+ *       500:
+ *         description: "Internal Server Error"
+ */
+ 
 module.exports = router;

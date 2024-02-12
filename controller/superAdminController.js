@@ -13,6 +13,7 @@ const financialconfig = require('../model/financialConfig');
 
 
 const { validationResult } = require('express-validator');
+const appointment = require('../model/appointment');
 
 // router.get('/searchquery', async (req, res) => {
 //   try {
@@ -411,6 +412,47 @@ router.get('/meditator', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.get('/list-all-appointment' , async(req, res) =>{
+  try{
+    const data = await appointment.findAll();
+    res.json(data);
+  } catch ( error){
+    res.status(500).json({ message:' internal server error'});
+  }
+});
+
+
+router.put('/update-payment/:id', async (req, res) => {
+  const id = req.params.id;  // Corrected to access the ID from the parameters
+  const { check_out, payment, payment_method, appointment_status } = req.body;
+
+  try {
+      if (!id) {
+          return res.status(400).json({ error: 'ID not found' });
+      }
+
+      const dataToUpdate = {
+          check_out,
+          payment,
+          payment_method,
+          appointment_status
+      };
+
+      const updatedAppointment = await appointment.update(dataToUpdate, {
+          where: { id: id } // Corrected to specify the appointment ID to update
+      });
+
+      if (updatedAppointment[0] === 1) {
+          return res.status(200).json({ message: 'Appointment updated successfully' });
+      } else {
+          return res.status(404).json({ error: 'Appointment not found' });
+      }
+  } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
