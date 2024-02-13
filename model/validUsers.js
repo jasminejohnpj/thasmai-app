@@ -112,5 +112,5 @@ sequelize
     console.error('Error syncing Users table:', err);
   });
 
-module.exports = {Users,sequelize};
+module.exports = Users;
 

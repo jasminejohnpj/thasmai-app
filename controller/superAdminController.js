@@ -1,8 +1,8 @@
 const express = require('express');
 const { sequelize, reg, BankDetails } = require('../model/registration');
 const router = express.Router();
-const {Users} = require('../model/validUsers');
-const { Op } = require("sequelize");
+const Users = require('../model/validUsers');
+const { Op, where } = require("sequelize");
 const Distribution = require('../model/distribution');
 const financialconfig = require('../model/financialConfig');
 
@@ -453,6 +453,59 @@ router.put('/update-payment/:id', async (req, res) => {
   } catch (error) {
       console.error('Error:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.put('/discount/:UId', async (req, res) => {
+  const { UId } = req.params; // Assuming you are trying to get the UId from parameters
+  const coupon = req.body.coupon; // Assuming coupon is a property of the request body
+console.log(coupon);
+  try {
+    const user = await Users.findOne({ where: { UId } });
+    // console.log(user);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const totalCoupons = user.coupons;
+    if (coupon > totalCoupons) {
+      return res.status(400).json({ error: 'Invalid coupon amount' });
+    }
+
+    // Update total coupons
+    const updatedTotalCoupons = totalCoupons - coupon;
+    console.log("updatedTotalCoupons",updatedTotalCoupons)
+    await Users.update({ coupons: updatedTotalCoupons }, { where: { UId } });
+
+    // Assuming 'appointment' is a model with a proper 'where' condition for the update
+    // Adjust the following line based on your actual model and where condition
+    await appointment.update({ discount: coupon * 2500 }, { where: { UId } });
+
+    return res.status(200).json({ message: 'Discount updated successfully' });
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+router.get('/list-appointment/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find appointment by ID
+    const appointmentData = await appointment.findOne({ where: { id } });
+
+    if (!appointmentData) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    // Send appointment details as response
+    return res.status(200).json(appointmentData);
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

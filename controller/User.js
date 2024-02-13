@@ -1785,7 +1785,7 @@ router.get('/getBankDetails/:UId', async (req, res) => {
 
   router.get('/list-appointment', async(req,res) =>{
     try{
-      const { phone } = req.body
+      const { phone } = req.query;
 
       if(!phone) {
          
@@ -1800,42 +1800,48 @@ router.get('/getBankDetails/:UId', async (req, res) => {
       res.status(500).json({message:'internal server error'});
     }
   });
+
 /**
  * @swagger
- * /User/list-appointment
+ * /list-appointment:
  *   get:
- *     summary: To list the appointments
- *     description:  To list the appointments
+ *     summary: Get a list of appointments
+ *     description: Get a list of appointments based on the provided phone number.
+ *     parameters:
+ *       - in: query
+ *         name: phone
+ *         required: true
+ *         description: The phone number to filter appointments.
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description:Fetching appointments
+ *         description: Successfully fetched appointments
  *         content:
  *           application/json:
  *             example:
- *               Id: 11
- *               UId: "1"
- *               phone: "76879890"
- *               appointmentDate: "20-04-2023"
- *               num_of_people: 2
- *               pickup: "true" 
- *               from: "airport"
- *               room: "1"
- *               emergencyNumber: "76879890"
- *               appointment_time : "2:00:00"
- *               appointment_reason : "visit"
- *       200:
- *         description: No records found with timeEstimate >= 90
- *         content:
- *           application/json:
- *             example:
- *               error: No records found with timeEstimate >= 90
+ *               message: Fetching appointments
+ *               list:
+ *                 - Id: 11
+ *                   UId: "1"
+ *                   phone: "76879890"
+ *                   appointmentDate: "20-04-2023"
+ *                   num_of_people: 2
+ *                   pickup: "true" 
+ *                   from: "airport"
+ *                   room: "1"
+ *                   emergencyNumber: "76879890"
+ *                   appointment_time : "2:00:00"
+ *                   appointment_reason : "visit"
  *       500:
  *         description: Internal Server Error
  *         content:
  *           application/json:
  *             example:
- *               error: Internal Server Error
+ *               message: Internal Server Error
  */
+
+
   router.delete('/appointment/:id', async(req,res) =>{
     const { phone} = req.body;
     const id = req.params.id;

@@ -23,7 +23,7 @@ const appointment = sequelize.define('appointment',{
    appointment_status:{ type:DataTypes.STRING},
    payment:{ type:DataTypes.STRING},
    payment_method:{type : DataTypes.STRING},
-   discount:{ type:DataTypes.STRING},
+   discount:{ type:DataTypes.INTEGER},
    check_out:{ type: DataTypes.STRING}
 },
 {timestamps: false});

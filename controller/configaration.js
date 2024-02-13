@@ -5,7 +5,7 @@ const axios = require('axios');
 const session = require('express-session');
 const Redis = require('ioredis');
 const redis = new Redis();
-const financialconfig = require('../model/financialconfig');
+const financialconfig = require('../model/financialConfig');
 const applicationconfig = require('../model/applicationConfig');
 const { route } = require('./AdminController');
 
