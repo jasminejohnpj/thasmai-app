@@ -1843,8 +1843,9 @@ router.get('/getBankDetails/:UId', async (req, res) => {
 
 
   router.delete('/appointment/:id', async(req,res) =>{
-    const { phone} = req.body;
-    const id = req.params.id;
+    // console.log('delete')
+    const { phone,id} = req.query
+    // const id = req.params.id;/
     try{
 
       //console.log('delete appointment');
@@ -1866,30 +1867,29 @@ router.get('/getBankDetails/:UId', async (req, res) => {
  * @swagger
  * /User/appointment/{id}:
  *   delete:
- *     summary: To delete the appointment
- *     description: To delete the appointment
+ *     summary: Delete an appointment
+ *     description: Delete an appointment by providing the appointment ID and user's phone number for authentication.
  *     parameters:
- *       - name: "id"
- *         in: "path"
- *         description: "ID of the appointment to be deleted"
- *         required: true
- *         type: "string"
- *       - name: "phone"
- *         in: "body"
- *         description: "User's phone number for authentication"
+ *       - in: query
+ *         name: id
+ *         description: ID of the appointment to be deleted
  *         required: true
  *         schema:
- *           type: "object"
- *           properties:
- *             phone:
- *               type: "string"
+ *           type: string
+ *       - in: query
+ *         name: phone
+ *         description: User's phone number for authentication
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: "Appointment deleted successfully"
- *       404:
- *         description: "User not authenticated"
+ *         description: Appointment deleted successfully
+ *       401:
+ *         description: Unauthorized - User not authenticated
  *       500:
- *         description: "Internal Server Error"
+ *         description: Internal Server Error
  */
+
  
 module.exports = router;

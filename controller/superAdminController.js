@@ -438,7 +438,7 @@ router.put('/update-payment/:id', async (req, res) => {
           check_out,
           payment,
           payment_method,
-          appointment_status
+          appointment_status : "Completed"
       };
 
       const updatedAppointment = await appointment.update(dataToUpdate, {

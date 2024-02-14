@@ -30,7 +30,7 @@ const options = {
         },
     servers: [
         {
-            url: "http://localhost:5000/api/v1/"
+            url: "http://94.176.237.33:3000/api/v1/"
         }
     ],
 },
