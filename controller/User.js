@@ -1842,7 +1842,7 @@ router.get('/getBankDetails/:UId', async (req, res) => {
  */
 
 
-  router.delete('/appointment/:id', async(req,res) =>{
+  router.delete('/appointment', async(req,res) =>{
     // console.log('delete')
     const { phone,id} = req.query
     // const id = req.params.id;/
@@ -1857,7 +1857,7 @@ router.get('/getBankDetails/:UId', async (req, res) => {
       }
       // delete appointment
       await data.destroy();
-      return res.status(200).json('delete appointment');
+      return res.status(200).json({message:'delete appointment'});
 
     } catch(error){
       return res.status(500).json({message:'internal server error'});
@@ -1865,7 +1865,7 @@ router.get('/getBankDetails/:UId', async (req, res) => {
   });
 /**
  * @swagger
- * /User/appointment/{id}:
+ * /User/appointment:
  *   delete:
  *     summary: Delete an appointment
  *     description: Delete an appointment by providing the appointment ID and user's phone number for authentication.
