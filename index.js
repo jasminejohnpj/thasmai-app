@@ -37,7 +37,7 @@ const options = {
     apis: ["./controller/*.js"]
 };
 
-
+//comment
 // Added the missing closing parenthesis here
 const swaggerSpec = swaggerJSDoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
