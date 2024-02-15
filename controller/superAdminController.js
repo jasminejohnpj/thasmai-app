@@ -14,6 +14,7 @@ const financialconfig = require('../model/financialConfig');
 
 const { validationResult } = require('express-validator');
 const appointment = require('../model/appointment');
+const { response } = require('../router/routing');
 
 // router.get('/searchquery', async (req, res) => {
 //   try {
@@ -415,19 +416,49 @@ router.get('/meditator', async (req, res) => {
   }
 });
 
-router.get('/list-all-appointment' , async(req, res) =>{
-  try{
-    const data = await appointment.findAll();
-    res.json(data);
-  } catch ( error){
-    res.status(500).json({ message:' internal server error'});
+// router.get('/list-all-appointment' , async(req, res) =>{
+//   console.log("..........enter............")
+//   try{
+//     const data = await appointment.findAll();
+//     res.json(data);
+//   } catch ( error){
+//     res.status(500).json({ message:' internal server error'});
+//   }
+// });
+
+router.get('/list-all-appointment', async (req, res) => {
+  try {
+    const appointmentData = await appointment.findAll();
+
+    if (!appointmentData || appointmentData.length === 0) {
+      return res.status(404).json({ message: 'No appointments found' });
+    }
+    const UIds = appointmentData.map(appointment => appointment.UId);
+
+    const userData = await Users.findAll({
+      where: { UId: { [Op.in]: UIds } },
+      attributes: ['UId', 'coupons'],
+    });
+    const userCouponMap = new Map(userData.map(user => [user.UId, user.coupons]));
+
+    const mergedResults = appointmentData.map(appointment => {
+      const userCoupons = userCouponMap.get(appointment.UId) || 0;
+      return {
+        ...appointment.dataValues,
+        userCoupons,
+      };
+    });
+
+    res.json({ message: 'Success', data: mergedResults });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-
 router.put('/update-payment/:id', async (req, res) => {
   const id = req.params.id;  // Corrected to access the ID from the parameters
-  const { check_out, payment, payment_method, appointment_status } = req.body;
+  const { check_out, payment, payment_method, appointment_status,appointmentDate } = req.body;
 
   try {
       if (!id) {
@@ -435,18 +466,21 @@ router.put('/update-payment/:id', async (req, res) => {
       }
 
       const dataToUpdate = {
+        appointmentDate,
           check_out,
           payment,
           payment_method,
-          appointment_status : "Completed"
+          appointment_status 
       };
 
       const updatedAppointment = await appointment.update(dataToUpdate, {
           where: { id: id } // Corrected to specify the appointment ID to update
       });
-
+console.log(dataToUpdate);
       if (updatedAppointment[0] === 1) {
+      
           return res.status(200).json({ message: 'Appointment updated successfully' });
+          console.log(res);
       } else {
           return res.status(404).json({ error: 'Appointment not found' });
       }
@@ -456,13 +490,61 @@ router.put('/update-payment/:id', async (req, res) => {
   }
 });
 
+// router.put('/discount/:UId', async (req, res) => {
+//   const { UId } = req.params;
+//   const { coupon, id } = req.body;
+
+//   try {
+//     // Check if UId is a valid integer
+//     if (isNaN(parseInt(UId))) {
+//       return res.status(400).json({ error: 'Invalid User ID' });
+//     }
+
+//     // Check if coupon is numeric
+//     if (isNaN(parseInt(coupon))) {
+//       return res.status(400).json({ error: 'Coupon amount must be a number' });
+//     }
+
+//     const user = await Users.findOne({ where: { UId } });
+
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
+
+//     const totalCoupons = user.coupons;
+//     if (coupon > totalCoupons) {
+//       return res.status(400).json({ error: 'Invalid coupon amount' });
+//     }
+
+//     const updatedTotalCoupons = totalCoupons - coupon;
+//     await Users.update({ coupons: updatedTotalCoupons }, { where: { UId } });
+
+//     // Assuming 'appointment' is a model with a proper 'where' condition for the update
+//     await appointment.update({ discount: coupon * 2500 }, { where: { id } });
+
+//     return res.status(200).json({ message: 'Discount updated successfully' });
+//   } catch (error) {
+//     console.error('Error:', error);
+//     return res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
 router.put('/discount/:UId', async (req, res) => {
-  const { UId } = req.params; // Assuming you are trying to get the UId from parameters
-  const coupon = req.body.coupon; // Assuming coupon is a property of the request body
-console.log(coupon);
+  const { UId } = req.params;
+  const { coupon, id } = req.body;
+
   try {
+    // Check if UId is a valid integer
+    if (isNaN(parseInt(UId))) {
+      return res.status(400).json({ error: 'Invalid User ID' });
+    }
+
+    // Check if coupon is numeric
+    if (isNaN(parseInt(coupon))) {
+      return res.status(400).json({ error: 'Coupon amount must be a number' });
+    }
+
     const user = await Users.findOne({ where: { UId } });
-    // console.log(user);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -473,22 +555,18 @@ console.log(coupon);
       return res.status(400).json({ error: 'Invalid coupon amount' });
     }
 
-    // Update total coupons
     const updatedTotalCoupons = totalCoupons - coupon;
-    console.log("updatedTotalCoupons",updatedTotalCoupons)
     await Users.update({ coupons: updatedTotalCoupons }, { where: { UId } });
 
     // Assuming 'appointment' is a model with a proper 'where' condition for the update
-    // Adjust the following line based on your actual model and where condition
-    await appointment.update({ discount: coupon * 2500 }, { where: { UId } });
+    await appointment.update({ discount: coupon * 2500 }, { where: { id } });
 
     return res.status(200).json({ message: 'Discount updated successfully' });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
-});
-
+})
 
 router.get('/list-appointment/:id', async (req, res) => {
   const { id } = req.params;

@@ -1087,7 +1087,7 @@ router.post("/appointment", async (req, res) => {
           appointment_reason,
           register_date,
           user_name : existingUser.first_name +" "+ existingUser.last_name,
-          appointment_status:"check_in"
+          appointment_status:"Not Arrived"
 
       });
 
