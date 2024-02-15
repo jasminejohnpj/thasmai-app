@@ -1087,7 +1087,8 @@ router.post("/appointment", async (req, res) => {
           appointment_reason,
           register_date,
           user_name : existingUser.first_name +" "+ existingUser.last_name,
-          appointment_status:"Not Arrived"
+          appointment_status:"Not Arrived",
+          discount: "0"
 
       });
 
@@ -1891,5 +1892,7 @@ router.get('/getBankDetails/:UId', async (req, res) => {
  *         description: Internal Server Error
  */
 
- 
+router.get('/user_profile/:UId' , async(req,res) =>{
+
+})
 module.exports = router;
