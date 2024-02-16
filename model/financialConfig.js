@@ -7,13 +7,10 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 
 });
 const financialconfig = sequelize.define('FinancialConfig', {
-    points :{type:DataTypes.INTEGER},
+    point :{type:DataTypes.INTEGER},
     coupons: {type:DataTypes.INTEGER},
-    coupon_saturation: {type:DataTypes.INTEGER},
+    coupon_satuaeation: {type:DataTypes.INTEGER},
     fee: {type:DataTypes.INTEGER},
-},
-{
-    timestamps: false,
 });
 sequelize.sync({alter:true})
     .then((data) => {

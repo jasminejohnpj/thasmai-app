@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const { DataTypes, Sequelize } = require('sequelize');
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
@@ -16,7 +15,7 @@ const appointment = sequelize.define('appointment',{
    from : { type: DataTypes.STRING},
    room: { type: DataTypes.STRING},
    emergencyNumber : { type: DataTypes.STRING},
-   appointment_time: { type: DataTypes.STRING},
+   //appointment_time: { type: DataTypes.STRING},
    appointment_reason: { type: DataTypes.TEXT},
    user_name:{ type:DataTypes.STRING},
    register_date:{ type:DataTypes.STRING},

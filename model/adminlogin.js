@@ -7,17 +7,12 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
     logging: false,
 
 });
-const applicationconfig = sequelize.define('applicationconfig',{
-reg_page_prompt:{type:DataTypes.STRING},
-reg_page_Reff:{type:DataTypes.STRING},
-reg_footer_text:{type:DataTypes.STRING},
-reg_successcard:{type:DataTypes.STRING},
-reg_successcard_phone:{type:DataTypes.STRING},
-reg_success_pageHeading:{type:DataTypes.STRING},
-reg_success_pageText:{type:DataTypes.TEXT},
-reg_success_SMS:{type:DataTypes.TEXT},
-reg_email_prompt:{type:DataTypes.TEXT},
-
+const ad = sequelize.define('applicationconfig',{
+    reg_page_prompt:{type:DataTypes.STRING},
+    reg_page_Reff:{type:DataTypes.STRING},
+    reg_footer_text:{type:DataTypes.STRING},
+    reg_successcard:{type:DataTypes.STRING},
+    
 },
 {
     timestamps: false, 

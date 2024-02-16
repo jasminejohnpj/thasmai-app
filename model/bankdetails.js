@@ -17,7 +17,7 @@ const BankDetails = sequelize.define('bankDetails', {
         defaultValue: 0,
       },
 });
-sequelize.sync({alter:true})
+sequelize.sync()
     .then((data) => {
        // console.log(data);
         console.log('BankDetails table created');

@@ -49,6 +49,7 @@ const reg = sequelize.define('reg', {
     classAttended: { type: DataTypes.STRING, defaultValue: 'false' },
     ans : { type: DataTypes.STRING },
     other: { type: DataTypes.STRING},
+    profilePicUrl: { type: DataTypes.STRING, allowNull: true }
  });
 // const BankDetails = sequelize.define('bankDetails', {
 //     AadarNo: { type: DataTypes.INTEGER,defaultValue:0 },
@@ -65,7 +66,7 @@ const reg = sequelize.define('reg', {
 //reg.hasOne(BankDetails);
 
 
-sequelize.sync()
+sequelize.sync({alter: false})
     .then((data) => {
        // console.log(data);
         console.log('reg table created');
